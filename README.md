@@ -1,6 +1,6 @@
 
 
-###How to run Magento 2 with Docker
+## How to run Magento 2 with Docker
 
 -- The following line define need in hosts file 
 
@@ -12,7 +12,7 @@
 `docker-compose up`
 
 
-###Magento Admin User Credential
+## Magento Admin User Credential
 
 **username** : admin
 
