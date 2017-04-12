@@ -1,0 +1,47 @@
+version: '2'
+
+services:
+  phpfpm:
+    build:
+      context: ./docker/phpfpm/
+    volumes:
+          - /var/www/magento2
+          - docroot:/var/www/magento2
+          - ./composer/auth.json:/root/.composer/auth.json
+          - ./confs/php.ini:/usr/local/etc/php/php.ini
+    ports:
+          - "9000:9000"
+    hostname: phpfpm
+    environment:
+          - MAGENTO_BASE_URL=http://magento2.local
+    links:
+          - mysql
+  nginx:
+    build:
+      context: ./docker/nginx/
+    volumes:
+          - /var/www/magento2
+          - docroot:/var/www/magento2
+          - ./confs/magento2.conf:/etc/nginx/conf.d/magento2.conf
+    ports:
+          - "80:80"
+    environment:
+          - NGINX_HOST=http://magento2.local
+          - NGINX_PORT=80
+    links:
+          - phpfpm
+  mysql:
+    image: mysql:latest
+    ports:
+          - "3306:3306"
+    hostname: mysql
+    volumes:
+          - ./docker/mysql/:/tmp/database
+          - my-datavolume:/var/lib/mysql
+    command: mysqld --init-file="/tmp/database/schema.sql"
+    environment:
+          - MYSQL_ROOT_PASSWORD=root
+volumes:
+  my-datavolume:
+  docroot:
+
